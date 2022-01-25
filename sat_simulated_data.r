@@ -103,7 +103,68 @@ lines(density(syn_sat_mnorm_1$fy_gpa), col = 3)
 
 
 
-# 
+# IL_OH_10Y PUMS 
+
+library("synthpop")
+library("arrow")
+
+pums <- read.csv(file = "C:/Users/Hariolf/Desktop/IL_OH_10Y_PUMS.csv")
+
+pums$x <- NULL
+
+
+num_vars <- c("HHWT", "PERWT", "INCWAGE", "INCWELFR", "INCINVST", "INCEARN", "POVERTY", "DEPARTS", "ARRIVES")
+#num_vars <- c("HHWT", "INCEARN", "DEPARTS")
+#num_vars <- c("INCWAGE", "INCWELFR", "INCEARN", "POVERTY")
+
+
+pums_sub <- pums[,num_vars]
+
+
+mu_pums_sub <- apply(pums_sub, 2, mean)
+cov_pums_sub <- nearPD(cov(pums_sub))$mat
+
+set.seed(9290)
+pums_sub_syn <- rmvnorm(n = nrow(pums_sub), mu = mu_pums_sub, sigma = cov_pums_sub)
+pums_sub_syn_simple <- as.data.frame(pums_sub_syn)
+
+
+# barely applicable with only few variables. 
+cov_pums_sub <- as.matrix(nearPD(cov_pums_sub)$mat)
+ktss_ps <- apply(pums_sub, 2, kurtosis)[1,]
+skwn_ps <- apply(pums_sub, 2, skew)
+pums_sub_syn_cmplx <- mvrnonnorm(n = nrow(pums_sub), mu = mu_pums_sub, Sigma = cov_pums_sub, skewness = skwn_ps, kurtosis = ktss_ps)
+
+
+
+# proceed only with pums_sub_syn_simple
+
+pums_sub_syn_simple$HHWT[pums_sub_syn_simple$HHWT <=1] <- 1
+pums_sub_syn_simple$PERWT[pums_sub_syn_simple$PERWT <=1] <- 1
+pums_sub_syn_simple$INCWAGE[pums_sub_syn_simple$INCWAGE <=0] <- 0
+pums_sub_syn_simple$INCWELFR[pums_sub_syn_simple$INCWELFR<=0] <- 0
+pums_sub_syn_simple$POVERTY[pums_sub_syn_simple$POVERTY<=0] <- 0
+pums_sub_syn_simple$DEPARTS[pums_sub_syn_simple$DEPARTS<=0] <- 0
+pums_sub_syn_simple$ARRIVES [pums_sub_syn_simple$ARRIVES <=0] <- 0
+
+
+apply(pums_sub_syn_simple, 2, summary)
+apply(pums_sub, 2, summary)
+
+
+
+test <- syn.cart(pums$EDUC, pums[,num_vars], pums_sub_syn_simple, smoothing = "", proper = FALSE, minbucket = 5, cp = 1e-08)
+
+
+
+
+
+
+
+
+
+
+
 
 
 
