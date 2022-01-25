@@ -109,8 +109,11 @@ library("synthpop")
 library("arrow")
 
 pums <- read.csv(file = "C:/Users/Hariolf/Desktop/IL_OH_10Y_PUMS.csv")
+save(pums, file = "C:/Users/Hariolf/Documents/GitHub/https-github.com-SteffenMoritz-Synthetic_Data_Challenge/pums.RData")
 
 pums$x <- NULL
+
+
 
 
 num_vars <- c("HHWT", "PERWT", "INCWAGE", "INCWELFR", "INCINVST", "INCEARN", "POVERTY", "DEPARTS", "ARRIVES")
