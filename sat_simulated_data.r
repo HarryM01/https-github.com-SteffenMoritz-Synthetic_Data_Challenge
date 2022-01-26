@@ -108,12 +108,13 @@ lines(density(syn_sat_mnorm_1$fy_gpa), col = 3)
 library("synthpop")
 library("arrow")
 
-pums <- read.csv(file = "C:/Users/Hariolf/Desktop/IL_OH_10Y_PUMS.csv")
-save(pums, file = "C:/Users/Hariolf/Documents/GitHub/https-github.com-SteffenMoritz-Synthetic_Data_Challenge/pums.RData")
+#pums <- read.csv(file = "C:/Users/Hariolf/Desktop/IL_OH_10Y_PUMS.csv")
+#save(pums, file = "C:/Users/Hariolf/Documents/GitHub/https-github.com-SteffenMoritz-Synthetic_Data_Challenge/pums.RData")
+load("C:/Users/Hariolf/Documents/GitHub/https-github.com-SteffenMoritz-Synthetic_Data_Challenge/pums.RData")
 
 pums$x <- NULL
 
-
+pums <- pums[sample(1:100000, size = 100000),]
 
 
 num_vars <- c("HHWT", "PERWT", "INCWAGE", "INCWELFR", "INCINVST", "INCEARN", "POVERTY", "DEPARTS", "ARRIVES")
@@ -156,9 +157,28 @@ apply(pums_sub, 2, summary)
 
 
 
-test <- syn.cart(pums$EDUC, pums[,num_vars], pums_sub_syn_simple, smoothing = "", proper = FALSE, minbucket = 5, cp = 1e-08)
+xp <- pums_sub_syn_simple
+vars_sel <- num_vars
+vars_gen <- names(pums)[!names(pums)%in%vars_sel]
+vars_gen <- vars_gen[!vars_gen %in% c("X", "sim_individual_id", "INCTOT")]
+test <- 0
+
+for(v in vars_gen){
+  cart_fit <- syn.cart(pums[,v], pums[,vars_sel], pums_sub_syn_simple, smoothing = "", proper = FALSE, minbucket = 5, cp = 1e-08)
+  assign(v, cart_fit$res)
+  pums_sub_syn_simple <- cbind(assign(v, cart_fit$res), pums_sub_syn_simple)
+  colnames(pums_sub_syn_simple)[1] <- v
+  vars_sel <- c(vars_sel, paste(v))
+  test <- test +1
+  cat(test, sep="\n")
+}
+
+pums_syn_syndatcart <- pums_sub_syn_simple
 
 
+save(list = "syn_sat_mnorm_1", file = "C:/Users/Hariolf/Documents/GitHub/https-github.com-SteffenMoritz-Synthetic_Data_Challenge/syn_sat_mnorm_simple.RData")
+save(list = "syn_sat_mnorm_2", file = "C:/Users/Hariolf/Documents/GitHub/https-github.com-SteffenMoritz-Synthetic_Data_Challenge/syn_sat_mnorm_complex.RData")
+save(list = "pums_syn_syndatcart", file = "C:/Users/Hariolf/Documents/GitHub/https-github.com-SteffenMoritz-Synthetic_Data_Challenge/pums_syn_syndatcart.RData")
 
 
 
