@@ -175,12 +175,14 @@ for(v in vars_gen){
 
 pums_syn_syndatcart <- pums_sub_syn_simple
 
+syn_sat_mnorm_simple <- syn_sat_mnorm_1
+syn_sat_mnorm_complex.RData <- syn_sat_mnorm_2
 
-save(list = "syn_sat_mnorm_1", file = "C:/Users/Hariolf/Documents/GitHub/https-github.com-SteffenMoritz-Synthetic_Data_Challenge/syn_sat_mnorm_simple.RData")
-save(list = "syn_sat_mnorm_2", file = "C:/Users/Hariolf/Documents/GitHub/https-github.com-SteffenMoritz-Synthetic_Data_Challenge/syn_sat_mnorm_complex.RData")
+
+save(list = "syn_sat_mnorm_simple", file = "C:/Users/Hariolf/Documents/GitHub/https-github.com-SteffenMoritz-Synthetic_Data_Challenge/syn_sat_mnorm_simple.RData")
+save(list = "syn_sat_mnorm_complex.RData", file = "C:/Users/Hariolf/Documents/GitHub/https-github.com-SteffenMoritz-Synthetic_Data_Challenge/syn_sat_mnorm_complex.RData")
 save(list = "pums_syn_syndatcart", file = "C:/Users/Hariolf/Documents/GitHub/https-github.com-SteffenMoritz-Synthetic_Data_Challenge/pums_syn_syndatcart.RData")
-
-
+# pums_syn_syndatcart: not working with mit non-normal multivariate distribution
 
 
 
